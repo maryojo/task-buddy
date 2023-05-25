@@ -1,3 +1,5 @@
+require('dotenv').config({path:'./.env'});
+
 const express = require('express');
 const apiRoutes = require('./routes');
 const { sequelize, connectToDatabase} = require('./database');
@@ -15,5 +17,6 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, async () =>{
   console.log('listening on port: '+PORT);
+  console.log(process.env.PORT);
   await connectToDatabase();
 })

@@ -1,5 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+const { User } = require('../models');
+
+
+
+const secretKey = process.env.SECRET_KEY;
 
 router.post('/', async (req, res) => {
 
@@ -14,8 +20,9 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ message: 'User with this email already exists.' });
     }
     const newUser = await User.create({ email, password, name });
+    const newUserId = newUser.id
+    const token = jwt.sign({ email }, secretKey, { expiresIn: "1h" });
 
-    const token = generateToken(newUser.id);
     res.status(201).json({ token });
   } catch (error) {
     console.log(error);

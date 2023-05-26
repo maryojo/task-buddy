@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const {User, Task} = require("./models");
+const {User, Task} = require("../models");
+const verifyToken = require("../authentication/verify");
 
 
 //CRUD operations
@@ -124,7 +125,7 @@ router.post("/tasks", async (req, res) => {
 // Get a task by id
 router.get("/task/:taskId", async (req, res) => {
   const taskId = req.params.taskId;
-  const userId = req.session.userId; // Assuming user ID is stored in the session
+  const userId = req.session.userId;
 
   try {
     const task = await Task.findOne({

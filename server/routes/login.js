@@ -16,8 +16,10 @@ router.post("/", async (req, res) => {
     }
 
     {
+      const user = await User.findOne({ where: { email } });
+      const userId = user.id;
       const token = jwt.sign({ email }, secretKey, { expiresIn: "1h" });
-      res.status(200).json({ token });
+      res.status(200).json({ token, userId });
     }
   } catch (error) {
     console.error(error);

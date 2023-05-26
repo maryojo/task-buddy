@@ -6,8 +6,13 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   }
 });
 
+let db = {};
 
-//connect to mysql
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+
+//connect to postgresql
 const connectToDatabase = async () =>{
   try{
     await sequelize.authenticate();
@@ -20,5 +25,6 @@ const connectToDatabase = async () =>{
 
 module.exports = {
   sequelize,
-  connectToDatabase
+  connectToDatabase,
+  db
 }

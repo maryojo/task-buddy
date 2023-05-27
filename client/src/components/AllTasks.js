@@ -1,27 +1,15 @@
 import React, { useState, useEffect } from "react";
 import ToDoCard from "./ToDoCard";
-import fetchTasks from "./fetchTasks";
-
-// let userId = localStorage.getItem("userId");
 
 
 const AllTasks = ({userId, tasks, setTasks}) => {
- 
-  // useEffect(() => {
-  //   fetchTasks(userId)
-  //     .then((fetchedTasks) => {
-  //       setTasks(fetchedTasks);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching tasks:", error);
-  //     });
-  // }, []);
 
-  const handleUpdateTask = ( id, name, content ) => {
+  const handleUpdateTask = ( id, name, content, isCompleted ) => {
     const params = {
       userId: userId,
       id: id,
     };
+
 
     fetch(`http://localhost:3001/api/task/${params.userId}/${params.id}`, {
       method: "PATCH",
@@ -31,6 +19,7 @@ const AllTasks = ({userId, tasks, setTasks}) => {
       body: JSON.stringify({
         title: name,
         description: content,
+        completed: isCompleted,
       }),
     })
       .then((response) => {
@@ -42,6 +31,39 @@ const AllTasks = ({userId, tasks, setTasks}) => {
       })
       .then((data) => {
         console.log(data);
+        setTasks((prevTasks) =>
+          prevTasks.map((task) => (task.id === id ? { ...task, ...data } : task))
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleUpdateTaskStatus = ( id, isCompleted ) => {
+    const params = {
+      userId: userId,
+      id: id,
+    };
+
+
+    fetch(`http://localhost:3001/api/task/${params.userId}/${params.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        completed: isCompleted,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Request failed");
+        }
+      })
+      .then((data) => {
         setTasks((prevTasks) =>
           prevTasks.map((task) => (task.id === id ? { ...task, ...data } : task))
         );
@@ -78,7 +100,6 @@ const AllTasks = ({userId, tasks, setTasks}) => {
         console.error(error);
       });
   };
-  console.log(tasks);
   if(tasks !== undefined) {
   return (
     <div className="w-full flex flex-wrap gap-3">
@@ -90,6 +111,7 @@ const AllTasks = ({userId, tasks, setTasks}) => {
             id={task.id}
             handleUpdateTask={handleUpdateTask}
             handleDeleteTask={handleDeleteTask}
+            handleUpdateTaskStatus={handleUpdateTaskStatus}
           />
         );
       })}

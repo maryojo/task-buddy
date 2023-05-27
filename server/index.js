@@ -12,9 +12,10 @@ app.use(express.json());
 
 
 const corsOptions = {
-  origin: 'https://task-buddy.onrender.com/',
+  origin: 'https://task-buddy.onrender.com',
 };
 app.use(cors(corsOptions));
+
 
 
 //Routes

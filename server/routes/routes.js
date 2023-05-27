@@ -3,11 +3,28 @@ const router = express.Router();
 const {User, Task} = require("../models");
 
 
+const authenticate = (req, res, next) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, 'your-secret-key');
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+};
+
+
 
 //CRUD operations
 //USERS
 //Get all users
-router.get("/users", async (req, res) => {
+router.get("/users", authenticate, async (req, res) => {
   try{
     const users = await User.findAll();
     res.status(200).json(users);

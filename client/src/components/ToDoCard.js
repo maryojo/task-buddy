@@ -1,82 +1,58 @@
-import React, {useState} from 'react'
-import { EditText } from 'react-edit-text';
-import 'react-edit-text/dist/index.css';
+import React, { useState } from "react";
+import { EditText } from "react-edit-text";
+import "react-edit-text/dist/index.css";
+import { TbSquareRoundedCheckFilled } from "react-icons/tb";
+import { RiDeleteBinFill } from "react-icons/ri";
 
-const ToDoCard = ({title, content, color, id}) => {
-  const [taskTitle, setTaskTitle] = useState(null);
-  const [taskDescription, setTaskDescription] = useState('');
-  let userId = localStorage.getItem("userId");
+const ToDoCard = ({ task, handleUpdateTask, handleDeleteTask}) => {
+
   let tTitle = null;
   let description = null;
 
+  const convertTimestampToLocaleTime = (timeString) => {
+    const date = new Date(timeString);
+    const localDate = date.toLocaleDateString();
+    const localTime = date.toLocaleTimeString();
 
-
-  
-  const handleUpdateTask = async () =>{
-
-    const params = {
-      userId: "1",
-      id: "1"
-    };
-
-    fetch(`https://task-buddy-server.onrender.com/api/task/${params.userId}/${params.id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ 
-        title: tTitle, 
-        description: description,
-      }),
-    })
-      .then((response) => {
-    
-        if (response.ok) {
-          return response.json();
-
-        } else {
-          throw new Error('Request failed');
-          
-        }
-      })
-      .then((data) => {
-        console.log(data);
-        //Add new task to array of tasks
-      })
-      .catch((error) => {
-        console.error(error);
-       
-      });    
+    return `${localDate} at ${localTime}`;
   };
 
-
+  let id = task.id;
   const handleTitleSave = ({ name, value, previousValue }) => {
     tTitle = value;
-    handleUpdateTask();
+    handleUpdateTask(id, tTitle);
   };
 
   const handleDescSave = ({ name, value, previousValue }) => {
     description = value;
-    handleUpdateTask();
+    handleUpdateTask(id, description);
   };
 
-
-
   return (
-    <div className=' bg-pink-300 flex gap-5 flex-col p-5 rounded-md'>
-    <div>
-    <EditText
-    name='title'
-    onSave={handleTitleSave}
-    defaultValue ={title}/>
-    <button>Edit</button>
-    </div>
+    <div className="w-[25rem] bg-pink-300 flex flex-col p-3 pb-10 rounded-md">
+      <div className="flex justify-between pb-2">
+        <p className="text-xs text-zinc-700">
+          {convertTimestampToLocaleTime(task.createdAt)}
+        </p>
+        <div className="flex gap-4">
+          <RiDeleteBinFill className="text-zinc-400 cursor-pointer hover:text-red-400" onClick={() => handleDeleteTask(task.id)}/>
+          <TbSquareRoundedCheckFilled className="text-zinc-400 cursor-pointer hover:text-zinc-800" />
+        </div>
+      </div>
       <EditText
-      name='description'
-      defaultValue={content}
-      onSave={handleDescSave}/>
+        name="title"
+        onSave={handleTitleSave}
+        defaultValue={task.title}
+        className="font-semibold"
+      />
+      <EditText
+        name="description"
+        defaultValue={task.description}
+        onSave={handleDescSave}
+        className="text-sm"
+      />
     </div>
-  )
-}
+  );
+};
 
-export default ToDoCard
+export default ToDoCard;

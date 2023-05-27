@@ -13,8 +13,6 @@ const Login = () => {
 
   let navigate = useNavigate();
 
- 
-
 
   const fetchUserData = (userID) => {
     const params = userID;
@@ -23,7 +21,6 @@ const Login = () => {
       .then((response) => response.json())
       .then((data) => {
         sessionStorage.setItem("userData", JSON.stringify(data));
-        // fetchTasks(userID);
       })
       .catch((error) => {
         console.error(error);
@@ -52,13 +49,12 @@ const Login = () => {
           return response.json();
         } else {
           setLoading(false);
-          toast.error("You don't have an account. Create an account");
+          toast.error("Something went wrong, check your details and try again! If you are new, please register your account");
           throw new Error("Request failed");
         }
       })
       .then((data) => {
         setLoading(false);
-        console.log(data);
         const token = data.token;
         const userId = data.userId;
         localStorage.setItem("userId", userId);
@@ -73,7 +69,7 @@ const Login = () => {
   };
 
   return (
-    <main className="w-screen h-screen flex flex-col md:flex-row">
+    <div className="w-screen h-screen flex flex-col md:flex-row  bg-[#222222] text-neutral-300">
       <section className="h-[30vh] md:h-screen w-full md:w-2/6 lg:w-3/6">
         <img src={pattern} className="h-full w-full object-cover object-top" alt=""/>
       </section>
@@ -118,7 +114,7 @@ const Login = () => {
           </p>
         </form>
       </section>
-    </main>
+    </div>
   );
 };
 

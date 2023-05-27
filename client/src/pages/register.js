@@ -32,12 +32,11 @@ const Register = () => {
       if (response.ok) {
         const data = await response.json();
         const token = data.token;
-        console.log(token);
         localStorage.setItem('token', token);
         navigate('/dashboard');
 
       } else {
-        toast("Wow so easy !", response);
+        toast("Something went wrong, check your details and try again!", response);
       }
     } catch (error) {
       console.log(error);
@@ -45,14 +44,14 @@ const Register = () => {
   };
 
   return (
-    <main className="w-screen h-screen flex flex-col md:flex-row">
+    <main className="w-screen h-screen flex flex-col md:flex-row bg-[#222222] text-neutral-300">
       <section className="h-[30vh] md:h-screen w-full md:w-2/6 lg:w-3/6">
-        <img src={pattern} className="h-full w-full object-cover object-top" />
+        <img src={pattern} className="h-full w-full object-cover object-top" alt=""/>
       </section>
       <section className="h-screen w-full md:w-4/6 lg:w-3/6 flex items-center justify-center">
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-4/6">
           <div className="flex justify-center mb-5">
-            <img src={logo} className="w-[9rem]" />
+            <img src={logo} className="w-[9rem]" alt="logo"/>
           </div>
 
           <div className="flex flex-col">
@@ -92,7 +91,7 @@ const Register = () => {
 
           <PrimaryButton type="submit" text="Register" />
           <p className="text-sm">
-            Don't have an account yet?{" "}
+            Already have an account?{" "}
             <Link
               to="/"
               className="text-primary underline font-semibold"

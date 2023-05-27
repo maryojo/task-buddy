@@ -177,7 +177,7 @@ router.patch("/task/:userId/:taskId", async (req, res) => {
   const taskId = req.params.taskId;
   const userId = req.params.userId; 
  
-  const { title, description, completed } = req.body;
+  const { title, description } = req.body;
   const updatedFields = {};
 
   if (title) {
@@ -187,6 +187,32 @@ router.patch("/task/:userId/:taskId", async (req, res) => {
   if (description) {
     updatedFields.description = description;
   }
+
+  try {
+    const [updatedRows] = await Task.update(updatedFields, {
+      where: {
+        id: taskId,
+        userId: userId,
+      },
+    });
+
+    if (updatedRows === 0) {
+      return res.status(404).json({ error: 'Task not found or not authorized' });
+    }
+
+    res.status(200).json(updatedFields);
+  } catch (error) {
+    console.error('Error updating task:', error);
+    res.status(500).json({ error: 'Error updating task' });
+  }
+});
+
+router.patch("/task/update/:userId/:taskId", async (req, res) => {
+  const taskId = req.params.taskId;
+  const userId = req.params.userId; 
+ 
+  const { completed } = req.body;
+  const updatedFields = {};
 
   if (completed) {
     updatedFields.completed = completed;

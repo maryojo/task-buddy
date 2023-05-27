@@ -19,7 +19,14 @@ const ToDoCard = ({ task, handleUpdateTask, handleDeleteTask, handleUpdateTaskSt
 
   let id = task.id;
   const toggleTaskStatus = () => {
-    handleUpdateTaskStatus(id, complete);
+    let updatedComplete; 
+
+    if(task.complete === true) {
+      updatedComplete = false;
+    } else {
+      updatedComplete = true;
+    }
+    handleUpdateTaskStatus(id, updatedComplete);
   };
   const handleTitleSave = ({ name, value, previousValue }) => {
     tTitle = value;
@@ -33,16 +40,19 @@ const ToDoCard = ({ task, handleUpdateTask, handleDeleteTask, handleUpdateTaskSt
 
 
   return (
-    <div className="w-[25rem] bg-pink-300 flex flex-col p-3 pb-10 rounded-md">
+    <div className="w-[25rem] bg-zinc-100 text-zinc-900 flex flex-col p-3 pb-10 rounded-md">
       <div className="flex justify-between pb-2">
         <p className="text-xs text-zinc-700">
           {convertTimestampToLocaleTime(task.createdAt)}
         </p>
-        <button onClick={toggleTaskStatus}> click me </button>
         <div className="flex gap-4">
           <RiDeleteBinFill
             className="text-zinc-400 cursor-pointer hover:text-red-400"
             onClick={() => handleDeleteTask(task.id)}
+          />
+          <TbSquareRoundedCheckFilled
+          className={task.completed ? "text-primary cursor-pointer " : "text-zinc-400 cursor-pointer hover:text-primary"}
+            onClick={toggleTaskStatus}
           />
         </div>
       </div>

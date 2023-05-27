@@ -3,7 +3,7 @@ import Avatar from 'react-avatar';
 
 const ProfileCard = ({name, email}) => {
   return (
-    <section className='flex gap-3 items-center p-3 rounded-md bg-zinc-300'>
+    <section className='flex gap-3 items-center p-3 rounded-md bg-[#222222]'>
       <div className=''>
         <Avatar name={name} size="40" round className='w-full'/>
       </div>

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import ToDoCard from "./ToDoCard";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
-const AllTasks = ({userId, tasks, setTasks}) => {
-
-  const handleUpdateTask = ( id, name, content, isCompleted ) => {
+const AllTasks = ({ userId, tasks, setTasks }) => {
+  const handleUpdateTask = (id, name, content) => {
     const params = {
       userId: userId,
       id: id,
     };
-
 
     fetch(`http://localhost:3001/api/task/${params.userId}/${params.id}`, {
       method: "PATCH",
@@ -19,7 +19,6 @@ const AllTasks = ({userId, tasks, setTasks}) => {
       body: JSON.stringify({
         title: name,
         description: content,
-        completed: isCompleted,
       }),
     })
       .then((response) => {
@@ -30,9 +29,10 @@ const AllTasks = ({userId, tasks, setTasks}) => {
         }
       })
       .then((data) => {
-        console.log(data);
         setTasks((prevTasks) =>
-          prevTasks.map((task) => (task.id === id ? { ...task, ...data } : task))
+          prevTasks.map((task) =>
+            task.id === id ? { ...task, ...data } : task
+          )
         );
       })
       .catch((error) => {
@@ -40,22 +40,24 @@ const AllTasks = ({userId, tasks, setTasks}) => {
       });
   };
 
-  const handleUpdateTaskStatus = ( id, isCompleted ) => {
+  const handleUpdateTaskStatus = (id, isCompleted) => {
     const params = {
       userId: userId,
       id: id,
     };
 
-
-    fetch(`http://localhost:3001/api/task/${params.userId}/${params.id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        completed: isCompleted,
-      }),
-    })
+    fetch(
+      `http://localhost:3001/api/task/update/${params.userId}/${params.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          completed: isCompleted,
+        }),
+      }
+    )
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -65,7 +67,9 @@ const AllTasks = ({userId, tasks, setTasks}) => {
       })
       .then((data) => {
         setTasks((prevTasks) =>
-          prevTasks.map((task) => (task.id === id ? { ...task, ...data } : task))
+          prevTasks.map((task) =>
+            task.id === id ? { ...task, completed: !task.completed } : task
+          )
         );
       })
       .catch((error) => {
@@ -73,7 +77,7 @@ const AllTasks = ({userId, tasks, setTasks}) => {
       });
   };
 
-  const handleDeleteTask = ( id ) => {
+  const handleDeleteTask = (id) => {
     const params = {
       userId: userId,
       id: id,
@@ -91,33 +95,37 @@ const AllTasks = ({userId, tasks, setTasks}) => {
         } else {
           throw new Error("Request failed");
         }
-      }).then((data) => {
-        console.log(data);
-        setTasks((prevTasks) =>
-        prevTasks.filter((task) => task.id !== id));
+      })
+      .then((data) => {
+        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+        toast.success("Your task has been deleted");
       })
       .catch((error) => {
         console.error(error);
       });
   };
-  if(tasks !== undefined) {
-  return (
-    <div className="w-full flex flex-wrap gap-3">
-      {tasks.map((task) => {
-        return (
-          <ToDoCard
-            key={task.id}
-            task={task}
-            id={task.id}
-            handleUpdateTask={handleUpdateTask}
-            handleDeleteTask={handleDeleteTask}
-            handleUpdateTaskStatus={handleUpdateTaskStatus}
-          />
-        );
-      })}
-    </div>
-  );
-  };
+  if (tasks !== undefined || tasks.length !== 0) {
+    return (
+      <div className="w-full flex flex-wrap gap-3">
+        {tasks.map((task) => {
+          return (
+            <ToDoCard
+              key={task.id}
+              task={task}
+              id={task.id}
+              handleUpdateTask={handleUpdateTask}
+              handleDeleteTask={handleDeleteTask}
+              handleUpdateTaskStatus={handleUpdateTaskStatus}
+            />
+          );
+        })}
+      </div>
+    );
+  } else if(tasks.length === 0){
+    return (
+    <div className="text-zinc-500">You don't have any tasks. Click on the 'Add' button to add a new task</div>
+    );
+  }
 };
 
 export default AllTasks;

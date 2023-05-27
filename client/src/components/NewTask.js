@@ -1,12 +1,11 @@
-import React, {useState} from 'react'
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import fetchTasks from './fetchTasks';
 
-const NewTask = ({tasks, setTasks, userId}) => {
+const NewTask = ({ tasks, setTasks, userId }) => {
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -27,7 +26,6 @@ const NewTask = ({tasks, setTasks, userId}) => {
     })
       .then((response) => {
         if (response.ok) {
-          console.log(response)
           return response.json();
         } else {
           toast.error("Wow so easy !");
@@ -35,10 +33,9 @@ const NewTask = ({tasks, setTasks, userId}) => {
         }
       })
       .then((data) => {
-        console.log(data);
         let newTask = data;
         setTasks((prevTasks) => [...prevTasks, newTask]);
-        console.log(tasks);
+        toast.success("Your task has been added");
       })
       .catch((error) => {
         console.error(error);
@@ -46,22 +43,32 @@ const NewTask = ({tasks, setTasks, userId}) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-    <input
-      type="text"
-      value={taskTitle}
-      onChange={(e) => setTaskTitle(e.target.value)}
-      placeholder="What task do you have to do?"
-    />
-    <input
-      type="text"
-      value={taskDescription}
-      onChange={(e) => setTaskDescription(e.target.value)}
-      placeholder="Add anything else here"
-    />
-    <button type="submit">Add</button>
-  </form>
-  )
-}
+    <form
+      onSubmit={handleSubmit}
+      className="p-5 bg-zinc-100 text-zinc-900 rounded-md w-[95%] flex justify-between"
+    >
+      <div className="flex flex-col gap-5 w-full">
+        <input
+          type="text"
+          value={taskTitle}
+          onChange={(e) => setTaskTitle(e.target.value)}
+          className="w-full border-none focus:outline-none focus:border-none bg-transparent"
+          placeholder="What task do you have to do?"
+        />
+        <input
+          type="text"
+          value={taskDescription}
+          onChange={(e) => setTaskDescription(e.target.value)}
+          className="w-full border-none focus:outline-none focus:border-none bg-transparent"
+          placeholder="Add a detailed description here"
+        />
+      </div>
 
-export default NewTask
+      <button type="submit" className="bg-primary rounded-md p-4 h-14">
+        Add
+      </button>
+    </form>
+  );
+};
+
+export default NewTask;

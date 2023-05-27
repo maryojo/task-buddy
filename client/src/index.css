@@ -10,10 +10,17 @@
   --primary-color: #f9d67d;
 }
 
-body{
-  font-family: 'Poppins', sans-serif;
-/* font-family: 'Source Sans Pro', sans-serif; */
+@layer base{
+  *{
+    /* font-family: 'Poppins', sans-serif; */
+   
+  font-family: 'Source Sans Pro', sans-serif;
+  }
+
+
 }
+
+
 
 @layer components{
   .basic-input{

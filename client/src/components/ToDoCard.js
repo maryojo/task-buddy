@@ -28,6 +28,11 @@ const ToDoCard = ({ task, handleUpdateTask, handleDeleteTask}) => {
     handleUpdateTask(id, description);
   };
 
+  const toggleTaskStatus = () => {
+    const updatedTask = { ...task, completed: !task.completed };
+    handleUpdateTask(updatedTask);
+  };
+
   return (
     <div className="w-[25rem] bg-pink-300 flex flex-col p-3 pb-10 rounded-md">
       <div className="flex justify-between pb-2">
@@ -36,7 +41,7 @@ const ToDoCard = ({ task, handleUpdateTask, handleDeleteTask}) => {
         </p>
         <div className="flex gap-4">
           <RiDeleteBinFill className="text-zinc-400 cursor-pointer hover:text-red-400" onClick={() => handleDeleteTask(task.id)}/>
-          <TbSquareRoundedCheckFilled className="text-zinc-400 cursor-pointer hover:text-zinc-800" />
+          <TbSquareRoundedCheckFilled className="text-zinc-400 cursor-pointer hover:text-zinc-800" onClick={toggleTaskStatus}>{task.completed ? 'Mark Incomplete' : 'Mark Complete'}</TbSquareRoundedCheckFilled>
         </div>
       </div>
       <EditText

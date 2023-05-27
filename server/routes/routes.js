@@ -177,7 +177,7 @@ router.patch("/task/:userId/:taskId", async (req, res) => {
   const taskId = req.params.taskId;
   const userId = req.params.userId; 
  
-  const { title, description } = req.body;
+  const { title, description, completed } = req.body;
   const updatedFields = {};
 
   if (title) {
@@ -186,6 +186,10 @@ router.patch("/task/:userId/:taskId", async (req, res) => {
 
   if (description) {
     updatedFields.description = description;
+  }
+
+  if (completed) {
+    updatedFields.completed = completed;
   }
 
   try {

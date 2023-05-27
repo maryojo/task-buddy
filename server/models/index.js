@@ -37,7 +37,7 @@ const Task = sequelize.define('task', {
   category: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: 'none',
+    defaultValue: 'all',
   },
 });
 

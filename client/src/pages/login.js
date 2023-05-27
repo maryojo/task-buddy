@@ -9,23 +9,28 @@ import PrimaryButton from "../components/PrimaryButton";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
   let navigate = useNavigate();
 
-  const fetchTasks = (userID) => {
-    const params = new URLSearchParams({
-      userId: userID,
-    });
+ 
 
-    fetch(`http://localhost:3001/api/tasks?${params}`)
+
+  const fetchUserData = (userID) => {
+    const params = userID;
+
+    fetch(`http://localhost:3001/api/user/${params}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        sessionStorage.setItem("userTasks", data);
+        sessionStorage.setItem("userData", JSON.stringify(data));
+        // fetchTasks(userID);
       })
       .catch((error) => {
         console.error(error);
       });
   };
+
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +38,8 @@ const Login = () => {
     if (!email || !password) {
       return;
     }
-
+    
+    setLoading(true);
     fetch("http://localhost:3001/api/login", {
       method: "POST",
       headers: {
@@ -45,20 +51,23 @@ const Login = () => {
         if (response.ok) {
           return response.json();
         } else {
+          setLoading(false);
           toast.error("You don't have an account. Create an account");
           throw new Error("Request failed");
         }
       })
       .then((data) => {
+        setLoading(false);
         console.log(data);
         const token = data.token;
         const userId = data.userId;
         localStorage.setItem("userId", userId);
-        fetchTasks(userId);
         localStorage.setItem("token", token);
+        fetchUserData(userId);
         navigate("/dashboard");
       })
       .catch((error) => {
+        setLoading(false);
         console.error(error);
       });
   };
@@ -66,12 +75,12 @@ const Login = () => {
   return (
     <main className="w-screen h-screen flex flex-col md:flex-row">
       <section className="h-[30vh] md:h-screen w-full md:w-2/6 lg:w-3/6">
-        <img src={pattern} className="h-full w-full object-cover object-top" />
+        <img src={pattern} className="h-full w-full object-cover object-top" alt=""/>
       </section>
       <section className="h-screen w-full md:w-4/6 lg:w-3/6 flex items-center justify-center">
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-4/6">
           <div className="flex justify-center mb-5">
-            <img src={logo} className="w-[9rem]" />
+            <img src={logo} className="w-[9rem]" alt="logo"/>
           </div>
 
           <div className="flex flex-col">
@@ -97,7 +106,7 @@ const Login = () => {
             />
           </div>
 
-          <PrimaryButton type="submit" text="Login" />
+          <PrimaryButton type="submit" text={loading ? 'Loading...' : 'Login'} disabled={loading}/>
           <p className="text-sm">
             Don't have an account yet?{" "}
             <Link

@@ -1,19 +1,24 @@
 import React from 'react';
+import PrimaryButton from './PrimaryButton';
 import { useNavigate } from 'react-router-dom';
 
 
-const LogoutButton = () => {
+const LogoutButton = ({setTasks, tasks}) => {
   const navigate = useNavigate();
+
+  console.log(tasks);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     sessionStorage.removeItem("userTasks");
+    sessionStorage.removeItem("userData");
+    setTasks = setTasks([]);
     navigate('/');
   };
 
   return (
-    <button onClick={handleLogout}>Logout</button>
+    <PrimaryButton onClick={handleLogout} text='Logout'/>
   );
 };
 

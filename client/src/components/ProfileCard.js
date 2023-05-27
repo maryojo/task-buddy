@@ -1,14 +1,15 @@
 import React from 'react'
+import Avatar from 'react-avatar';
 
-const ProfileCard = () => {
+const ProfileCard = ({name, email}) => {
   return (
-    <section className='flex justify-between items-center'>
-      <div className='w-5'>
-        <img className='object-cover rounded-full'/>
+    <section className='flex gap-3 items-center p-3 rounded-md bg-zinc-300'>
+      <div className=''>
+        <Avatar name={name} size="40" round className='w-full'/>
       </div>
-      <div>
-        <p></p>
-        <p></p>
+      <div className='w-3/5'>
+        <p className='text-sm'>{name}</p>
+        <p className='text-xs truncate'>{email}</p>
       </div>
     </section>
   )

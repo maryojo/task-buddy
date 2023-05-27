@@ -1,86 +1,46 @@
-import React, { useState } from 'react'
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Sidebar from '../components/Sidebar'
-import ToDoCard from '../components/ToDoCard'
+import React, { useEffect, useState } from "react";
+import Sidebar from "../components/Sidebar";
+import NewTask from "../components/NewTask";
+import AllTasks from "../components/AllTasks";
 
 
 
+let userIdFromStorage = localStorage.getItem("userId");
 
 const Dashboard = () => {
+  const [tasks, setTasks] = useState([]);
+  const [userId, setUserId] = useState(userIdFromStorage);
 
-  // const { data, isFetching, error } ;
-  const [taskTitle, setTaskTitle] = useState('');
-  const [taskDescription, setTaskDescription] = useState('');
-
-  let item_value = sessionStorage.getItem("userData");
-  let userId = localStorage.getItem("userId");
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!taskTitle || !taskDescription) {
-      return;
+  useEffect(() => {
+    function fetchTasks(userID) {
+      const params = new URLSearchParams({
+        userId: userID,
+      });
+  
+      fetch(`http://localhost:3001/api/tasks?${params}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setTasks(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
+  
+    fetchTasks(userId); 
+  }, []);
 
-    fetch('http://localhost:3001/api/tasks', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ 
-        userId: userId, 
-        title: taskTitle, 
-        description: taskDescription 
-      }),
-    })
-      .then((response) => {
-    
-        if (response.ok) {
-          return response.json();
-
-        } else {
-           toast.error("Wow so easy !");
-          throw new Error('Request failed');
-          
-        }
-      })
-      .then((data) => {
-        console.log(data);
-        //Add new task to array of tasks
-      })
-      .catch((error) => {
-        console.error(error);
-       
-      });    
-  };
-
-
-
+  console.log(tasks);
   return (
-    <div className='flex justify-around h-screen w-screen'>
-    <Sidebar/>
-    <div className='w-8/12'>
-    <h2>Hi there</h2>
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={taskTitle}
-        onChange={(e) => setTaskTitle(e.target.value)}
-        placeholder="What task do you have to do?"
-      />
-      <input
-        type="text"
-        value={taskDescription}
-        onChange={(e) => setTaskDescription(e.target.value)}
-        placeholder="Add anything else here"
-      />
-      <button type="submit">Add</button>
-    </form>
-    <ToDoCard title={'Hello'} content={'hi thejhej'} id={1}/>
-    </div>
+    <div className="flex justify-around h-screen w-screen ">
+      <Sidebar setTasks={setTasks} tasks={tasks}/>
+      <div className="w-8/12">
+        <h2>Hi there</h2>
+        <NewTask tasks={tasks} userId={userId} setTasks={setTasks}/>
+        <AllTasks tasks={tasks} userId={userId} setTasks={setTasks}/>
+      </div>
     </div>
   );
-}
+};
 
-export default Dashboard
+export default Dashboard;

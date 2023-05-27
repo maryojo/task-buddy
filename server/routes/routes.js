@@ -64,6 +64,7 @@ router.get("/user/:id", async (req, res) => {
       id: req.params.id
     }
   });
+  res.status(200).json(user);
 } catch (error) {
   console.error('Error fetching user:', error);
   res.status(500).json({ error: 'Error fetching user' });
@@ -207,7 +208,7 @@ router.patch("/task/:userId/:taskId", async (req, res) => {
 });
 
 //Delete a task
-router.delete('/task/:taskId', async (req, res) => {
+router.delete('/task/:userId/:taskId', async (req, res) => {
   const taskId = req.params.taskId;
   const userId = req.params.userId;
   try {

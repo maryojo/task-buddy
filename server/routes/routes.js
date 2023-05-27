@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {User, Task} = require("../models");
-const verifyToken = require("../authentication/verify");
+
 
 
 //CRUD operations
@@ -55,20 +55,28 @@ router.get("/user/:id", async (req, res) => {
 
 // Update user's name
 router.patch("/user/:id", async (req, res) => {
-  const user = await User.update({
-    where:{
-      id: req.params.id,
-    }
-  });
-
+  const userId = req.params.id;
   const { name } = req.body;
-  await user.set({
-    name: name
-  });
 
-  try{
-  await user.save();
-  res.status(200).json(user);
+  const user = await User.findByPk(userId);
+
+if (!user) {
+  return res.status(404).json({ error: 'User not found' });
+}
+
+  try {
+    const [updatedRows] = await User.update(
+      { name: name },
+      { where: { id: userId } }
+    );
+
+    if (updatedRows === 0) {
+      return res.status(404).json({ error: 'User not found or not authorized' });
+    }
+
+    const updatedUser = await User.findByPk(userId);
+
+    res.status(200).json(updatedUser);
   } catch(err){
     console.error('Error updating user details:', err);
     res.status(500).json({ err: 'Error updating user details' });
@@ -147,28 +155,26 @@ router.get("/task/:taskId", async (req, res) => {
 });
 
 // Update task properties
-router.patch("/task/:taskId", async (req, res) => {
+router.patch("/task/:userId/:taskId", async (req, res) => {
   const taskId = req.params.taskId;
   const userId = req.params.userId; 
-  // const userId = req.session.userId; 
+ 
+  const { title, description } = req.body;
+  const updatedFields = {};
 
-  let updatedFields = {};
-  if (req.body.title) {
-    updatedFields = {
-      title: req.body.title,
-      description: req.body.description,
-    };
-  } else {
-    updatedFields = {
-      description: req.body.description,
-    };
+  if (title) {
+    updatedFields.title = title;
   }
 
+  if (description) {
+    updatedFields.description = description;
+  }
 
   try {
     const [updatedRows] = await Task.update(updatedFields, {
       where: {
         id: taskId,
+        userId: userId,
       },
     });
 
@@ -176,7 +182,7 @@ router.patch("/task/:taskId", async (req, res) => {
       return res.status(404).json({ error: 'Task not found or not authorized' });
     }
 
-    res.status(200).json({ message: 'Task updated successfully' });
+    res.status(200).json(updatedFields);
   } catch (error) {
     console.error('Error updating task:', error);
     res.status(500).json({ error: 'Error updating task' });
@@ -186,8 +192,7 @@ router.patch("/task/:taskId", async (req, res) => {
 //Delete a task
 router.delete('/task/:taskId', async (req, res) => {
   const taskId = req.params.taskId;
-  const userId = req.session.userId; // Assuming user ID is stored in the session
-
+  const userId = req.params.userId;
   try {
     const deletedRows = await Task.destroy({
       where: {

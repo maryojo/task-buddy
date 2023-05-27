@@ -13,7 +13,7 @@ const NewTask = ({ tasks, setTasks, userId }) => {
       return;
     }
 
-    fetch("https://task-buddy.onrender.com/api/tasks", {
+    fetch("https://task-buddy-server.onrender.com/api/tasks", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

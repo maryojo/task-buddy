@@ -17,7 +17,7 @@ const Login = () => {
   const fetchUserData = (userID) => {
     const params = userID;
 
-    fetch(`https://task-buddy.onrender.com/api/user/${params}`)
+    fetch(`https://task-buddy-server.onrender.com/api/user/${params}`)
       .then((response) => response.json())
       .then((data) => {
         sessionStorage.setItem("userData", JSON.stringify(data));
@@ -37,7 +37,7 @@ const Login = () => {
     }
     
     setLoading(true);
-    fetch("https://task-buddy.onrender.com/api/login", {
+    fetch("https://task-buddy-server.onrender.com/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

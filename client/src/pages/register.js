@@ -21,7 +21,7 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch('https://task-buddy.onrender.com/api/register', {
+      const response = await fetch('https://task-buddy-server.onrender.com/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

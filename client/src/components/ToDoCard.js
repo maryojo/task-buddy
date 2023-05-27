@@ -19,7 +19,7 @@ const ToDoCard = ({title, content, color, id}) => {
       id: "1"
     };
 
-    fetch(`http://localhost:3001/api/task/${params.userId}/${params.id}`, {
+    fetch(`https://task-buddy-server.onrender.com/api/task/${params.userId}/${params.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

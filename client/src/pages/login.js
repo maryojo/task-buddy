@@ -14,7 +14,7 @@ const Login = () => {
       userId: userID,
     });
 
-      fetch(`http://localhost:3001/api/tasks?${params}`)
+      fetch(`https://task-buddy-server.onrender.com/api/tasks?${params}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -32,7 +32,7 @@ const Login = () => {
       return;
     }
 
-    fetch('http://localhost:3001/api/login', {
+    fetch('https://task-buddy-server.onrender.com/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

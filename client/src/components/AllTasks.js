@@ -11,7 +11,7 @@ const AllTasks = ({ userId, tasks, setTasks }) => {
       id: id,
     };
 
-    fetch(`http://localhost:3001/api/task/${params.userId}/${params.id}`, {
+    fetch(`https://task-buddy.onrender.com/api/task/${params.userId}/${params.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -47,7 +47,7 @@ const AllTasks = ({ userId, tasks, setTasks }) => {
     };
 
     fetch(
-      `http://localhost:3001/api/task/update/${params.userId}/${params.id}`,
+      `https://task-buddy.onrender.com/api/task/update/${params.userId}/${params.id}`,
       {
         method: "PATCH",
         headers: {
@@ -83,7 +83,7 @@ const AllTasks = ({ userId, tasks, setTasks }) => {
       id: id,
     };
 
-    fetch(`http://localhost:3001/api/task/${params.userId}/${params.id}`, {
+    fetch(`https://task-buddy.onrender.com/api/task/${params.userId}/${params.id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

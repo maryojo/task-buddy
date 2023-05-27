@@ -17,7 +17,7 @@ const Dashboard = () => {
         userId: userID,
       });
   
-      fetch(`http://localhost:3001/api/tasks?${params}`)
+      fetch(`https://task-buddy.onrender.com/api/tasks?${params}`)
         .then((response) => response.json())
         .then((data) => {
           setTasks(data);
